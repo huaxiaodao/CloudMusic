@@ -11,6 +11,7 @@ public class DjRadio {
 	public String Anchor;    //主播
 	public String RoInfo;    //电台简介
 	public String SubNumber; //订阅量
+	public String AnchorUrl; //主播URL
 	public ArrayList<Program> PgList;
 	//节目列表信息
 	public DjRadio(String result) throws Exception{
@@ -21,6 +22,7 @@ public class DjRadio {
 		PgList = new ArrayList<Program>();
 		
 	    Document doc = Jsoup.parse(result);
+	    addUrl(doc);
 	    Elements as=doc.select("title");
 	    RoName = as.text();
 	    System.out.println("电台： " +RoName);
@@ -40,12 +42,17 @@ public class DjRadio {
              pg.PyNumber = e.select("td[class=col3]").text();
              pg.PeNumber= e.select("td[class=col4]").text();
              pg.UpTime = e.select("td[class=col5]").text();
-             pg.duration = e.select("td[class=f-pr]").text();;
+             pg.Duration = e.select("td[class=f-pr]").text();;
              PgList.add(pg);
          }
   		for (Program p : PgList) {
-  			System.out.println("歌名：" + p.PgName + "  播放量: " + p.PyNumber + "  点赞数： " + p.PeNumber + "  上传时间： " + p.UpTime + "  时长: " + p.duration);
+  			System.out.println("节目名：" + p.PgName + "  播放量: " + p.PyNumber + "  点赞数： " + p.PeNumber + "  上传时间： " + p.UpTime + "  时长: " + p.Duration);
   		}
-  		
+	}
+	public String addUrl(Document doc) {
+		Elements us=doc.select("a[href*=user]");
+		AnchorUrl = "http://music.163.com" + us.attr("href");
+		System.out.println(AnchorUrl);
+		return AnchorUrl;
 	}
 }

@@ -10,13 +10,13 @@ public class Program {
 	public String PyNumber; //播放量
 	public String PeNumber; //点赞数
 	public String UpTime;   //上传时间
-	public String duration; //时长
+	public String Duration; //时长
 	
 public Program(Element result){
 	PgName = "";
 	PyNumber = "";
 	PeNumber = "";
 	UpTime = "";
-	duration = "";
+	Duration = "";
    }
 }

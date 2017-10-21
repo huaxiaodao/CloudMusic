@@ -7,6 +7,9 @@ public class Main {
 	    Spider spider = new Spider();
 	    String result = spider.getUrl(url);
 	    DjRadio radio = new DjRadio(result);
+	    String url1 = radio.AnchorUrl;
+	    String result1 = spider.getUrl(url1);
+	    Anchor anchor = new Anchor(result1);
          }
 }
 		     
