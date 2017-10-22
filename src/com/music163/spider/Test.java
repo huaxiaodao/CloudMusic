@@ -2,6 +2,10 @@ package com.music163.spider;
 
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -27,46 +31,71 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.music163.data.MysqlConnect;
+
 
 public class Test{
 	public static void main(String[] args) throws Exception{
-		    String url = "http://music.163.com/playlist?id=133647062";
+		    String url = "http://music.163.com/djradio?id=5811013";
 		    String result = getResult(url);
 		    Document doc = Jsoup.parse(result);
+		    String  Anchor;
+		    Elements us=doc.select("span[class=ply]");
+			Anchor = us.attr("data-res-radioid");
+			System.out.println(Anchor);
       		Elements es=doc.select("ul[class=f-hide]").select("a[href*=song?id]");
-      		//System.out.println("½á¹û£º" + es.text());
+      		//System.out.println("ç»“æœï¼š" + es.text());
       		 for (Element e : es) {
                  //String tt = e.attr("title");
-      			System.out.println("½á¹û£º" + e.text() + " " +e.attr("href"));
+      			 String SgName = e.text();
+      			 String musicURL = "http://music.163.com" + e.attr("href");
+      			 addSong(SgName,musicURL);
+      			 System.out.println("ç»“æœï¼š" + SgName + " " + musicURL);
              }
 	}
-        public static String getResult(String url) throws Exception {
+    public static String getResult(String url) throws Exception {
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().build();
              CloseableHttpResponse response = httpClient.execute(new HttpGet(url))) {
             String result = EntityUtils.toString(response.getEntity());
             return result;
         } catch (Exception e) {
-            System.out.println("»ñÈ¡Ê§°Ü");
+            System.out.println("è·å–å¤±è´¥");
             return "";
         }
     }
-      		 
-      		/** HtmlUnitÇëÇówebÒ³Ãæ 
+    public static void addSong(String SgName, String musicURL) {
+		// TODO Auto-generated method stub
+		Connection conn = MysqlConnect.getConnection();	
+		String addSQL = "insert into tb_song (SgName,SongURL) values(?,?)";
+		PreparedStatement pstmt = null;					
+		try {
+			pstmt = conn.prepareStatement(addSQL);
+			pstmt.setString(1,SgName);  
+			pstmt.setString(2,musicURL);             
+			pstmt.executeUpdate();							
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			MysqlConnect.close(pstmt);							
+			MysqlConnect.close(conn);							
+		}
+	}
+      		/** HtmlUnitè¯·æ±‚webé¡µé¢ 
       	    try {
       	    WebClient wc = new WebClient();
       	    wc.getOptions().setUseInsecureSSL(true);
-      	    wc.getOptions().setJavaScriptEnabled(true); // ÆôÓÃJS½âÊÍÆ÷£¬Ä¬ÈÏÎªtrue
-      	    wc.getOptions().setCssEnabled(false); // ½ûÓÃcssÖ§³Ö
+      	    wc.getOptions().setJavaScriptEnabled(true); // å¯ç”¨JSè§£é‡Šå™¨ï¼Œé»˜è®¤ä¸ºtrue
+      	    wc.getOptions().setCssEnabled(false); // ç¦ç”¨cssæ”¯æŒ
       	    wc.setAjaxController(new NicelyResynchronizingAjaxController());
-      	    wc.getOptions().setThrowExceptionOnScriptError(false); // jsÔËĞĞ´íÎóÊ±£¬ÊÇ·ñÅ×³öÒì³£
-      	    wc.getOptions().setTimeout(100000); // ÉèÖÃÁ¬½Ó³¬Ê±Ê±¼ä £¬ÕâÀïÊÇ10S¡£Èç¹ûÎª0£¬ÔòÎŞÏŞÆÚµÈ´ı
+      	    wc.getOptions().setThrowExceptionOnScriptError(false); // jsè¿è¡Œé”™è¯¯æ—¶ï¼Œæ˜¯å¦æŠ›å‡ºå¼‚å¸¸
+      	    wc.getOptions().setTimeout(100000); // è®¾ç½®è¿æ¥è¶…æ—¶æ—¶é—´ ï¼Œè¿™é‡Œæ˜¯10Sã€‚å¦‚æœä¸º0ï¼Œåˆ™æ— é™æœŸç­‰å¾…
       	    wc.getOptions().setDoNotTrackEnabled(false);
       	    HtmlPage page = wc.getPage(url);
       	   Elements msk1 = doc.getElementsByClass("m-cvrlst f-cb");
       	   System.out.println(msk.toString());
            Document mskDoc1 = Jsoup.parse(msk.toString());
    		   Elements es1=mskDoc1.select("a[href*=playlist]");
-   		   System.out.println("½á¹û£º" + es1.attr("href"));
+   		   System.out.println("ç»“æœï¼š" + es1.attr("href"));
       	    }catch (Exception e) {
       	    	 
                 e.printStackTrace();
