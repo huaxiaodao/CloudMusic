@@ -36,13 +36,26 @@ import com.music163.data.MysqlConnect;
 
 public class Test{
 	public static void main(String[] args) throws Exception{
-		    String url = "http://music.163.com/djradio?id=5811013";
+		String url;
+		String href = "http://music.163.com/discover/djradio/category?id=2001&order=1&_hash=allradios&limit=30&offset=";
+		int offset = 0;
+		for (int i = 0;i < 34;i++) {
+			url= href + offset;
+			offset = offset + 30;
+			System.out.println(url);
+			spider(url);
+		}
+	}
+	public static void spider(String url) throws Exception{
+		    url = url;
 		    String result = getResult(url);
 		    Document doc = Jsoup.parse(result);
 		    String  Anchor;
-		    Elements us=doc.select("span[class=ply]");
-			Anchor = us.attr("data-res-radioid");
-			System.out.println(Anchor);
+		    Elements us=doc.select("h3[class=f-fs3]").select("a[href*=/djradio?id]");
+		    for (Element u : us) {
+		    Anchor = u.attr("title");
+		    System.out.println(Anchor);
+		    }
       		Elements es=doc.select("ul[class=f-hide]").select("a[href*=song?id]");
       		//System.out.println("结果：" + es.text());
       		 for (Element e : es) {

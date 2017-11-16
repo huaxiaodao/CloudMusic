@@ -55,7 +55,7 @@ public Anchor(String result1) throws Exception{
 	 appendUrl(doc);
 	}
 public String appendUrl(Document doc) throws Exception {
-	Spider spider = new Spider();
+	//Spider spider = new Spider();
 	Encrypt encrypt = new Encrypt();
 	String tt = encrypt.crawlAjaxUrl(ID,BASE_URL,POST_URL);
     //System.out.println(tt);
@@ -69,7 +69,7 @@ public String appendUrl(Document doc) throws Exception {
     while (matcher.find()) {
        String url2 = "http://music.163.com/playlist?id=" + matcher.group(1);
        System.out.println(url2);
-       String result2 = spider.getUrl(url2);
+       String result2 = Spider.getUrl(url2);
        SongList music = new SongList(result2);
        ll.add(url2);
     } 

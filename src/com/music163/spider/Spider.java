@@ -7,7 +7,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 public class Spider {
-	public  String getUrl(String url) throws Exception {
+	public static  String getUrl(String url) throws Exception {
 	        try {
 	        	  CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 	        	  HttpGet httpGet = new HttpGet(url);
